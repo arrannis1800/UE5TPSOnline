@@ -97,6 +97,9 @@ void AUE5TPSOnlineCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AUE5TPSOnlineCharacter::Look);
+
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &AUE5TPSOnlineCharacter::Fire);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Triggered, this, &AUE5TPSOnlineCharacter::Aim);
 	}
 	else
 	{
