@@ -2,6 +2,8 @@
 
 
 #include "HealthComponent.h"
+#include "Net/UnrealNetwork.h"
+#include "GameFramework/Character.h"
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -11,6 +13,12 @@ UHealthComponent::UHealthComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
+}
+
+void UHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UHealthComponent, Health);
 }
 
 
@@ -29,6 +37,69 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	if (bIsAlive && Health < MaxHealth)
+	{
+		AddHealth(DeltaTime * Regeneration);
+	}
+}
+
+float UHealthComponent::GetCurrentHealth()
+{
+	return Health;
+}
+
+void UHealthComponent::AddHealth(float AddHealth)
+{
+	Health += AddHealth;
+	Health = FMath::Clamp(Health, 0.0f, MaxHealth);
+}
+
+float UHealthComponent::TakeDamage(float Damage)
+{
+	if (GetOwner() && GetOwner()->HasAuthority())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Server: %s has authority"), *GetOwner()->GetName());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Client: %s does not have authority"), *GetOwner()->GetName());
+	}
+	if (GetOwner()->HasAuthority()) // Only execute on the server
+	{
+		Health -= Damage;
+
+		// Ensure Health is clamped correctly
+		Health = FMath::Clamp(Health, 0.0f, MaxHealth);
+
+		// Trigger replication to clients
+		OnRep_Health();
+	}
+
+	return Health;
+}
+
+void UHealthComponent::SetHealthParams(float lMaxHealth, float lRegeneration)
+{
+	MaxHealth = lMaxHealth;
+	Regeneration = lRegeneration;
+}
+
+void UHealthComponent::OnRep_Health()
+{
+	OnHealthUpdate();
+}
+
+void UHealthComponent::OnHealthUpdate()
+{
+
+	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
+	if (OwnerCharacter && OwnerCharacter->IsLocallyControlled())
+	{
+		// Client-specific functionality
+		if (Health <= 0)
+		{
+			bIsAlive = false;
+		}
+	}
 }
 
