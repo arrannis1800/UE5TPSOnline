@@ -53,6 +53,8 @@ class AUE5TPSOnlineCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* AimAction;
 
+	bool bIsAiming;
+
 public:
 	AUE5TPSOnlineCharacter();
 	

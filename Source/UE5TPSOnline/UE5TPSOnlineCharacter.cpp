@@ -142,3 +142,10 @@ void AUE5TPSOnlineCharacter::Look(const FInputActionValue& Value)
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
+
+void AUE5TPSOnlineCharacter::Aim(const FInputActionValue& Value)
+{
+	bIsAiming = Value.GetMagnitude() ? true : false;
+	FVector Vec = FVector(150.0f, 0.0f, 0.0f) * (Value.GetMagnitude() ? 1 : -1);
+	FollowCamera->AddRelativeLocation(Vec);
+}
