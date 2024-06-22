@@ -56,14 +56,6 @@ void UHealthComponent::AddHealth(float AddHealth)
 
 float UHealthComponent::TakeDamage(float Damage)
 {
-	if (GetOwner() && GetOwner()->HasAuthority())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Server: %s has authority"), *GetOwner()->GetName());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Client: %s does not have authority"), *GetOwner()->GetName());
-	}
 	if (GetOwner()->HasAuthority()) // Only execute on the server
 	{
 		Health -= Damage;
