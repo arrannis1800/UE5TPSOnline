@@ -143,6 +143,47 @@ void AUE5TPSOnlineCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+void AUE5TPSOnlineCharacter::Fire(const FInputActionValue& Value)
+{
+	if (Controller->IsLocalController())
+	{
+		if (Value.GetMagnitude() ? true : false)
+		{
+			FireServer();
+		}
+		else
+		{
+			ReleaseFireServer();
+		}
+	}	
+}
+
+void AUE5TPSOnlineCharacter::FireServer_Implementation()
+{
+	if (HasAuthority())
+	{
+		//Fire;
+	}
+}
+
+bool AUE5TPSOnlineCharacter::ReleaseFireServer_Validate()
+{
+	return true; // Validation function for server-side RPC
+}
+
+void AUE5TPSOnlineCharacter::ReleaseFireServer_Implementation()
+{
+	if (HasAuthority())
+	{
+		//Reset bCanFire in weapon
+	}
+}
+
+bool AUE5TPSOnlineCharacter::FireServer_Validate()
+{
+	return true; // Validation function for server-side RPC
+}
+
 void AUE5TPSOnlineCharacter::Aim(const FInputActionValue& Value)
 {
 	bIsAiming = Value.GetMagnitude() ? true : false;

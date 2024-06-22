@@ -72,6 +72,9 @@ protected:
 	UFUNCTION(Server, Reliable, WithValidation)
 	void FireServer();
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ReleaseFireServer();
+
 	void Aim(const FInputActionValue& Value);
 			
 
