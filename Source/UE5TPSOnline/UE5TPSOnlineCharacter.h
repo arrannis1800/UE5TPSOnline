@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Components/Player/HealthComponent.h"
 #include "Logging/LogMacros.h"
 #include "UE5TPSOnlineCharacter.generated.h"
 
@@ -19,6 +20,8 @@ UCLASS(config=Game)
 class AUE5TPSOnlineCharacter : public ACharacter
 {
 	GENERATED_BODY()
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -69,5 +72,8 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
+	UHealthComponent* HealthComponent;
 };
 

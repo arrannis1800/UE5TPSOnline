@@ -10,11 +10,19 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Net/UnrealNetwork.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
 // AUE5TPSOnlineCharacter
+
+void AUE5TPSOnlineCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AUE5TPSOnlineCharacter, HealthComponent);
+}
 
 AUE5TPSOnlineCharacter::AUE5TPSOnlineCharacter()
 {
@@ -52,6 +60,9 @@ AUE5TPSOnlineCharacter::AUE5TPSOnlineCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+	HealthComponent->SetHealthParams(100.0f, 5.0f);
 }
 
 void AUE5TPSOnlineCharacter::BeginPlay()
