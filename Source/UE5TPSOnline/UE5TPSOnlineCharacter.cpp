@@ -97,6 +97,9 @@ void AUE5TPSOnlineCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AUE5TPSOnlineCharacter::Look);
+
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &AUE5TPSOnlineCharacter::Fire);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Triggered, this, &AUE5TPSOnlineCharacter::Aim);
 	}
 	else
 	{
@@ -138,4 +141,52 @@ void AUE5TPSOnlineCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void AUE5TPSOnlineCharacter::Fire(const FInputActionValue& Value)
+{
+	if (Controller->IsLocalController())
+	{
+		if (Value.GetMagnitude() ? true : false)
+		{
+			FireServer();
+		}
+		else
+		{
+			ReleaseFireServer();
+		}
+	}	
+}
+
+void AUE5TPSOnlineCharacter::FireServer_Implementation()
+{
+	if (HasAuthority())
+	{
+		//Fire;
+	}
+}
+
+bool AUE5TPSOnlineCharacter::ReleaseFireServer_Validate()
+{
+	return true; // Validation function for server-side RPC
+}
+
+void AUE5TPSOnlineCharacter::ReleaseFireServer_Implementation()
+{
+	if (HasAuthority())
+	{
+		//Reset bCanFire in weapon
+	}
+}
+
+bool AUE5TPSOnlineCharacter::FireServer_Validate()
+{
+	return true; // Validation function for server-side RPC
+}
+
+void AUE5TPSOnlineCharacter::Aim(const FInputActionValue& Value)
+{
+	bIsAiming = Value.GetMagnitude() ? true : false;
+	FVector Vec = FVector(150.0f, 0.0f, 0.0f) * (Value.GetMagnitude() ? 1 : -1);
+	FollowCamera->AddRelativeLocation(Vec);
 }

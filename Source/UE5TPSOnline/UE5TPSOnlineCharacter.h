@@ -47,6 +47,14 @@ class AUE5TPSOnlineCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* FireAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* AimAction;
+
+	bool bIsAiming;
+
 public:
 	AUE5TPSOnlineCharacter();
 	
@@ -58,6 +66,16 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+
+	void Fire(const FInputActionValue& Value);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void FireServer();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ReleaseFireServer();
+
+	void Aim(const FInputActionValue& Value);
 			
 
 protected:
