@@ -35,8 +35,6 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Health")
     float TakeDamage(float Damage);
 
-    void SetHealthParams(float lMaxHealth, float lRegeneration);
-
 protected:
     UFUNCTION()
     void OnRep_Health();

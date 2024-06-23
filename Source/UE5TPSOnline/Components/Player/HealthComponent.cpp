@@ -70,12 +70,6 @@ float UHealthComponent::TakeDamage(float Damage)
 	return Health;
 }
 
-void UHealthComponent::SetHealthParams(float lMaxHealth, float lRegeneration)
-{
-	MaxHealth = lMaxHealth;
-	Regeneration = lRegeneration;
-}
-
 void UHealthComponent::OnRep_Health()
 {
 	OnHealthUpdate();
