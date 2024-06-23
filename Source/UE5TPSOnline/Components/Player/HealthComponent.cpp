@@ -19,6 +19,7 @@ void UHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(UHealthComponent, Health);
+	DOREPLIFETIME(UHealthComponent, bIsAlive);
 }
 
 
@@ -32,12 +33,11 @@ void UHealthComponent::BeginPlay()
 }
 
 
-// Called every frame
 void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (bIsAlive && Health < MaxHealth)
+	if (bIsAlive)
 	{
 		AddHealth(DeltaTime * Regeneration);
 	}
@@ -57,15 +57,18 @@ void UHealthComponent::AddHealth(float AddHealth)
 
 float UHealthComponent::TakeDamage(float Damage)
 {
-	if (GetOwner()->HasAuthority()) // Only execute on the server
+	if (GetOwner()->HasAuthority())
 	{
 		Health -= Damage;
 
-		// Ensure Health is clamped correctly
 		Health = FMath::Clamp(Health, 0.0f, MaxHealth);
 
-		// Trigger replication to clients
 		OnRep_Health();
+		if (Health <= 0.0f)
+		{
+			bIsAlive = false;
+			UE_LOG(LogTemp, Warning, TEXT("IsAlive has changed to: %d"), bIsAlive);
+		}
 	}
 
 	return Health;
@@ -75,16 +78,7 @@ void UHealthComponent::OnRep_Health()
 {
 	OnHealthUpdate();
 }
-
 void UHealthComponent::OnHealthUpdate()
 {
-	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
-	if (OwnerCharacter && OwnerCharacter->IsLocallyControlled())
-	{
-		if (Health <= 0)
-		{
-			bIsAlive = false;
-		}
-	}
 }
 

@@ -48,6 +48,7 @@ protected:
     UPROPERTY(Replicated, ReplicatedUsing = "OnRep_Health")
     float Health = MaxHealth;
 
+    UPROPERTY(Replicated)
     bool bIsAlive = true;
 
     void OnHealthUpdate();
