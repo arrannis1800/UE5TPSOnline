@@ -205,3 +205,8 @@ void AUE5TPSOnlineCharacter::SwitchWeapon(const FInputActionValue& Value)
 {
 	WeaponManagerComponent->SwitchWeapon();
 }
+
+float AUE5TPSOnlineCharacter::TakeDamage(float DamageTaken, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	return HealthComponent->TakeDamage(DamageTaken);
+}

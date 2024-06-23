@@ -87,6 +87,10 @@ protected:
 	void Reload(const FInputActionValue& Value);
 
 	void SwitchWeapon(const FInputActionValue& Value);
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	float TakeDamage(float DamageTaken, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 			
 
 protected:
