@@ -17,7 +17,7 @@ ABaseWeapon::ABaseWeapon()
     Mesh = CreateDefaultSubobject<UStaticMeshComponent>("BaseMesh");
     Mesh->SetupAttachment(RootComponent);
     Mesh->SetMobility(EComponentMobility::Movable);
-    Mesh->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+    Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     Mesh->SetGenerateOverlapEvents(false);
 
 }
