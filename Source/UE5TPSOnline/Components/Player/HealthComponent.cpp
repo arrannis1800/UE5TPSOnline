@@ -43,8 +43,9 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	}
 }
 
-float UHealthComponent::GetCurrentHealth()
+float UHealthComponent::GetCurrentHealth(float& MaximumHealth)
 {
+	MaximumHealth = MaxHealth;
 	return Health;
 }
 
@@ -77,11 +78,9 @@ void UHealthComponent::OnRep_Health()
 
 void UHealthComponent::OnHealthUpdate()
 {
-
 	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
 	if (OwnerCharacter && OwnerCharacter->IsLocallyControlled())
 	{
-		// Client-specific functionality
 		if (Health <= 0)
 		{
 			bIsAlive = false;

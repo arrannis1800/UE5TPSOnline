@@ -27,7 +27,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
     UFUNCTION(BlueprintPure, Category = "Health")
-    float GetCurrentHealth();
+    float GetCurrentHealth(float& MaxHealth);
 
     UFUNCTION(BlueprintCallable, Category = "Health")
     void AddHealth(float AddHealth);
