@@ -62,7 +62,8 @@ AUE5TPSOnlineCharacter::AUE5TPSOnlineCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
-	HealthComponent->SetHealthParams(100.0f, 5.0f);
+
+	WeaponManagerComponent = CreateDefaultSubobject<UWeaponManagerComponent>(TEXT("WeaponManager"));
 }
 
 void AUE5TPSOnlineCharacter::BeginPlay()
@@ -98,8 +99,11 @@ void AUE5TPSOnlineCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AUE5TPSOnlineCharacter::Look);
 
-		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &AUE5TPSOnlineCharacter::Fire);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AUE5TPSOnlineCharacter::Fire);
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Triggered, this, &AUE5TPSOnlineCharacter::Aim);
+
+		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &AUE5TPSOnlineCharacter::Reload);
+		EnhancedInputComponent->BindAction(SwitchWeaponAction, ETriggerEvent::Triggered, this, &AUE5TPSOnlineCharacter::SwitchWeapon);
 	}
 	else
 	{
@@ -162,7 +166,8 @@ void AUE5TPSOnlineCharacter::FireServer_Implementation()
 {
 	if (HasAuthority())
 	{
-		//Fire;
+		WeaponManagerComponent->Fire();
+
 	}
 }
 
@@ -175,7 +180,7 @@ void AUE5TPSOnlineCharacter::ReleaseFireServer_Implementation()
 {
 	if (HasAuthority())
 	{
-		//Reset bCanFire in weapon
+		WeaponManagerComponent->CurrentWeapon->ReleaseFire();
 	}
 }
 
@@ -189,4 +194,14 @@ void AUE5TPSOnlineCharacter::Aim(const FInputActionValue& Value)
 	bIsAiming = Value.GetMagnitude() ? true : false;
 	FVector Vec = FVector(150.0f, 0.0f, 0.0f) * (Value.GetMagnitude() ? 1 : -1);
 	FollowCamera->AddRelativeLocation(Vec);
+}
+
+void AUE5TPSOnlineCharacter::Reload(const FInputActionValue& Value)
+{
+	WeaponManagerComponent->CurrentWeapon->Reload();
+}
+
+void AUE5TPSOnlineCharacter::SwitchWeapon(const FInputActionValue& Value)
+{
+	WeaponManagerComponent->SwitchWeapon();
 }
