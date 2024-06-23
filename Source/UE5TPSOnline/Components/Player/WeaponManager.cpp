@@ -45,8 +45,12 @@ void UWeaponManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 void UWeaponManagerComponent::SwitchWeapon()
 {
+	UE_LOG(LogTemp, Error, TEXT("WeaponIndex: %d"), WeaponIndex);
 	if (Weapons[WeaponIndex])
 	{
+		if(CurrentWeapon)
+			CurrentWeapon->Destroy();
+
 		// Spawn the weapon actor and attach it to the character
 		CurrentWeapon = GetWorld()->SpawnActor<ABaseWeapon>(Weapons[WeaponIndex]);
 		if (CurrentWeapon)
