@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Components/Player/HealthComponent.h"
+#include "Components/Player/WeaponManager.h"
 #include "Logging/LogMacros.h"
 #include "UE5TPSOnlineCharacter.generated.h"
 
@@ -55,6 +56,12 @@ class AUE5TPSOnlineCharacter : public ACharacter
 
 	bool bIsAiming;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ReloadAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SwitchWeaponAction;
+
 public:
 	AUE5TPSOnlineCharacter();
 	
@@ -76,6 +83,10 @@ protected:
 	void ReleaseFireServer();
 
 	void Aim(const FInputActionValue& Value);
+
+	void Reload(const FInputActionValue& Value);
+
+	void SwitchWeapon(const FInputActionValue& Value);
 			
 
 protected:
@@ -93,5 +104,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
 	UHealthComponent* HealthComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
+	UWeaponManagerComponent* WeaponManagerComponent;
 };
 
