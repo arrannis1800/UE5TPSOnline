@@ -53,8 +53,7 @@ void ABaseWeapon::Fire()
         if (Ammo <= 0)
         {
 
-            UE_LOG(LogTemplateCharacter, Error, TEXT("Reload"));
-            GetWorld()->GetTimerManager().SetTimer(TimerHandleReload, this, &ABaseWeapon::Reload, ReloadTime);
+            Reload();
             return;
         }
         --Ammo;
@@ -130,8 +129,18 @@ bool ABaseWeapon::ReleaseServerFire_Validate()
 
 void ABaseWeapon::Reload()
 {
+    GetWorld()->GetTimerManager().ClearTimer(TimerHandleReload);
+    UE_LOG(LogTemplateCharacter, Error, TEXT("Reload"));
+    GetWorld()->GetTimerManager().SetTimer(TimerHandleReload, this, &ABaseWeapon::Reload, ReloadTime);
+    bReloading = true;
+}
+
+void ABaseWeapon::FinishReload()
+{
+    UE_LOG(LogTemplateCharacter, Error, TEXT("Reload was finished"));
     Ammo = MaxAmmo;
     bCanFire = true;
+    bReloading = false;
 }
 
 void ABaseWeapon::SetCanFire()

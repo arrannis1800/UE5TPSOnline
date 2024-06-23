@@ -46,6 +46,8 @@ public:
 
 	void Reload();
 
+	void FinishReload();
+
 	void SetCanFire();
 
 	UFUNCTION()
@@ -66,6 +68,9 @@ protected:
 	bool bCanFire = true;
 
 	bool bButtonPressed = false;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bReloading;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	bool bAutofire;
