@@ -48,13 +48,21 @@ public:
 
 	void FinishReload();
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerReload();
+
 	void SetCanFire();
 
 	UFUNCTION()
 	void OnRep_Ammo();
 
+	UFUNCTION()
+	void OnRep_Reloading();
+
 	UFUNCTION(BlueprintPure, Category = "Weapon")
 	int32 GetAmmo(int32& lMaxAmmo);
+
+	void SetDefaultAmmo();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
@@ -69,14 +77,14 @@ protected:
 
 	bool bButtonPressed = false;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Replicated, ReplicatedUsing = "OnRep_Reloading")
 	bool bReloading;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	bool bAutofire;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	int32 MaxAmmo = 10;
+	int32 MaxAmmo;
 
 	UPROPERTY(Replicated, ReplicatedUsing = "OnRep_Ammo")
 	int32 Ammo = MaxAmmo;

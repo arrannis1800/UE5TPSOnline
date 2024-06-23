@@ -45,32 +45,56 @@ void UWeaponManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 void UWeaponManagerComponent::SwitchWeapon()
 {
-	UE_LOG(LogTemp, Error, TEXT("WeaponIndex: %d"), WeaponIndex);
-	if (Weapons[WeaponIndex])
+	if (GetOwnerRole() == ROLE_Authority)
 	{
-		if(CurrentWeapon)
-			CurrentWeapon->Destroy();
+		UE_LOG(LogTemp, Error, TEXT("WeaponIndex: %d"), WeaponIndex);
+		if (Weapons.Num() == 0)
+			return;
 
-		// Spawn the weapon actor and attach it to the character
-		CurrentWeapon = GetWorld()->SpawnActor<ABaseWeapon>(Weapons[WeaponIndex]);
-		if (CurrentWeapon)
+		if (Weapons[WeaponIndex])
 		{
-			// Attach the weapon to the character
-			ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
-			if (OwnerCharacter)
-			{
-				CurrentWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("WeaponSocket"));
-				CurrentWeapon->SetOwner(OwnerCharacter);
-			}
-			// Optionally, destroy the old weapon and update any necessary state
-		}
+			if (CurrentWeapon)
+				CurrentWeapon->Destroy();
 
-		WeaponIndex = (++WeaponIndex) % Weapons.Num();
+			CurrentWeapon = GetWorld()->SpawnActor<ABaseWeapon>(Weapons[WeaponIndex]);
+			if (CurrentWeapon)
+			{
+				CurrentWeapon->SetDefaultAmmo();
+				OnRep_CurrentWeapon();
+				// Attach the weapon to the character
+			}
+
+			WeaponIndex = (++WeaponIndex) % Weapons.Num();
+		}
 	}
+	else
+	{
+		ServerSwitchWeapon();
+	}
+}
+
+void UWeaponManagerComponent::ServerSwitchWeapon_Implementation()
+{
+	SwitchWeapon();
+}
+
+bool UWeaponManagerComponent::ServerSwitchWeapon_Validate()
+{
+	return true;
 }
 
 void UWeaponManagerComponent::Fire()
 {
 	CurrentWeapon->Fire();
+}
+
+void UWeaponManagerComponent::OnRep_CurrentWeapon()
+{
+	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
+	if (OwnerCharacter)
+	{
+		CurrentWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("WeaponSocket"));
+		CurrentWeapon->SetOwner(OwnerCharacter);
+	}
 }
 

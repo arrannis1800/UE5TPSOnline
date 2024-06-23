@@ -28,7 +28,8 @@ void ABaseWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ABaseWeapon, Ammo);
+    DOREPLIFETIME(ABaseWeapon, Ammo);
+    DOREPLIFETIME(ABaseWeapon, bReloading);
 }
 
 // Called when the game starts or when spawned
@@ -47,11 +48,12 @@ void ABaseWeapon::Tick(float DeltaTime)
 
 void ABaseWeapon::Fire()
 {
-    if (!bCanFire)
-        return;
 
     if (HasAuthority()) // Ensure we have server authority
     {
+        if (!bCanFire || bReloading)
+            return;
+
         if (Ammo <= 0)
         {
 
@@ -131,10 +133,32 @@ bool ABaseWeapon::ReleaseServerFire_Validate()
 
 void ABaseWeapon::Reload()
 {
-    GetWorld()->GetTimerManager().ClearTimer(TimerHandleReload);
-    UE_LOG(LogTemplateCharacter, Error, TEXT("Reload"));
-    GetWorld()->GetTimerManager().SetTimer(TimerHandleReload, this, &ABaseWeapon::Reload, ReloadTime);
-    bReloading = true;
+    if (bReloading)
+        return;
+
+    if (HasAuthority())
+    {
+        GetWorld()->GetTimerManager().ClearTimer(TimerHandleReload);
+        UE_LOG(LogTemplateCharacter, Error, TEXT("Reload"));
+        GetWorld()->GetTimerManager().SetTimer(TimerHandleReload, this, &ABaseWeapon::FinishReload, ReloadTime);
+        bCanFire = false; 
+        bReloading = true;
+    }
+    else
+    {
+        ServerReload();
+    }
+    
+}
+
+bool ABaseWeapon::ServerReload_Validate()
+{
+    return true;
+}
+
+void ABaseWeapon::ServerReload_Implementation()
+{
+    Reload();
 }
 
 void ABaseWeapon::FinishReload()
@@ -156,8 +180,18 @@ int32 ABaseWeapon::GetAmmo(int32& lMaxAmmo)
     return Ammo;
 }
 
+void ABaseWeapon::SetDefaultAmmo()
+{
+    Ammo = MaxAmmo;
+}
+
 void ABaseWeapon::OnRep_Ammo()
 {
+    UE_LOG(LogTemp, Warning, TEXT("Ammo changed"));
+}
 
+void ABaseWeapon::OnRep_Reloading()
+{
+    UE_LOG(LogTemp, Warning, TEXT("Reloading changed"));
 }
 

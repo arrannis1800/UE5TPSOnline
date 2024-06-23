@@ -22,6 +22,7 @@ void AUE5TPSOnlineCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AUE5TPSOnlineCharacter, HealthComponent);
+	DOREPLIFETIME(AUE5TPSOnlineCharacter, WeaponManagerComponent);
 }
 
 AUE5TPSOnlineCharacter::AUE5TPSOnlineCharacter()

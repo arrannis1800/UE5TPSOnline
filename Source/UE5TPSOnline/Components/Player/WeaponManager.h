@@ -29,6 +29,9 @@ public:
 
 	void SwitchWeapon();
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerSwitchWeapon();
+
 	void Fire();
 
 	UPROPERTY(EditAnywhere)
@@ -39,5 +42,8 @@ public:
 
 private:
 	int32 WeaponIndex;
+
+	UFUNCTION()
+	void OnRep_CurrentWeapon();
 		
 };
