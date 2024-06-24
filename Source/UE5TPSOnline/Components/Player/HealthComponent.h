@@ -53,5 +53,6 @@ protected:
 
     void OnHealthUpdate();
 
-		
+    UPROPERTY(EditDefaultsOnly)
+    UAnimSequence* DeathAnimmation;
 };

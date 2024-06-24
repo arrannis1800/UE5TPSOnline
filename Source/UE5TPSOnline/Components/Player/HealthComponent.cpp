@@ -68,6 +68,7 @@ float UHealthComponent::TakeDamage(float Damage)
 		{
 			bIsAlive = false;
 			UE_LOG(LogTemp, Warning, TEXT("IsAlive has changed to: %d"), bIsAlive);
+			OnRep_Health();
 		}
 	}
 
@@ -76,6 +77,10 @@ float UHealthComponent::TakeDamage(float Damage)
 
 void UHealthComponent::OnRep_Health()
 {
+	if (DeathAnimmation)
+	{
+		Cast<ACharacter>(GetOwner())->GetMesh()->PlayAnimation(DeathAnimmation, false);
+	}
 	OnHealthUpdate();
 }
 void UHealthComponent::OnHealthUpdate()
