@@ -77,7 +77,7 @@ float UHealthComponent::TakeDamage(float Damage)
 
 void UHealthComponent::OnRep_Health()
 {
-	if (DeathAnimmation)
+	if (!bIsAlive && DeathAnimmation)
 	{
 		Cast<ACharacter>(GetOwner())->GetMesh()->PlayAnimation(DeathAnimmation, false);
 	}

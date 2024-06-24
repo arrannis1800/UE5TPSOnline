@@ -63,7 +63,6 @@ AUE5TPSOnlineCharacter::AUE5TPSOnlineCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
-
 	WeaponManagerComponent = CreateDefaultSubobject<UWeaponManagerComponent>(TEXT("WeaponManager"));
 }
 
@@ -102,7 +101,6 @@ void AUE5TPSOnlineCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AUE5TPSOnlineCharacter::Fire);
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Triggered, this, &AUE5TPSOnlineCharacter::Aim);
-
 		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &AUE5TPSOnlineCharacter::Reload);
 		EnhancedInputComponent->BindAction(SwitchWeaponAction, ETriggerEvent::Triggered, this, &AUE5TPSOnlineCharacter::SwitchWeapon);
 	}
@@ -174,7 +172,7 @@ void AUE5TPSOnlineCharacter::FireServer_Implementation()
 
 bool AUE5TPSOnlineCharacter::ReleaseFireServer_Validate()
 {
-	return true; // Validation function for server-side RPC
+	return true;
 }
 
 void AUE5TPSOnlineCharacter::ReleaseFireServer_Implementation()
@@ -187,7 +185,7 @@ void AUE5TPSOnlineCharacter::ReleaseFireServer_Implementation()
 
 bool AUE5TPSOnlineCharacter::FireServer_Validate()
 {
-	return true; // Validation function for server-side RPC
+	return true;
 }
 
 void AUE5TPSOnlineCharacter::Aim(const FInputActionValue& Value)
